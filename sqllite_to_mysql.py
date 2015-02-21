@@ -5,12 +5,12 @@ import fileinput
 
 def this_line_is_useless(line):
     useless_es = [
-        'BEGIN TRANSACTION',
-        'COMMIT',
-        'sqlite_sequence',
-        'CREATE UNIQUE INDEX',        
-    'PRAGMA foreign_keys=OFF'
-        ]
+    'BEGIN TRANSACTION',
+    'COMMIT',
+    'sqlite_sequence',
+    'CREATE UNIQUE INDEX',
+    'PRAGMA foreign_keys=OFF',
+    ]
     for useless in useless_es:
         if re.search(useless, line):
                 return True
@@ -31,19 +31,19 @@ for line in fileinput.input():
         searching_for_end = True
 
     m = re.search('CREATE TABLE "?([A-Za-z_]*)"?(.*)', line)
-    if m:
-        name, sub = m.groups()
-        line = "DROP TABLE IF EXISTS %(name)s;\nCREATE TABLE IF NOT EXISTS `%(name)s`%(sub)s\n"
-        line = line % dict(name=name, sub=sub)
-    line = line.replace('AUTOINCREMENT','AUTO_INCREMENT')
-    line = line.replace('UNIQUE','')
-    line = line.replace('"','')
-    else:
-        m = re.search('INSERT INTO "([A-Za-z_]*)"(.*)', line)
-        if m:
-                line = 'INSERT INTO %s%s\n' % m.groups()
-                line = line.replace('"', r'\"')
-                line = line.replace('"', "'")
+	if m:
+		name, sub = m.groups()
+		line = "DROP TABLE IF EXISTS %(name)s;\nCREATE TABLE IF NOT EXISTS %(name)s%(sub)s\n"
+		line = line % dict(name=name, sub=sub)
+	line = line.replace('AUTOINCREMENT','AUTO_INCREMENT')
+	line = line.replace('UNIQUE','')
+	line = line.replace('"','')
+	else:
+		m = re.search('INSERT INTO "([A-Za-z_]*)"(.*)', line)
+		if m:
+						line = 'INSERT INTO %s%s\n' % m.groups()
+						line = line.replace('"', r'\"')
+						line = line.replace('"', "'")
     line = re.sub(r"(?<!')'t'(?=.)", r"1", line)
     line = re.sub(r"(?<!')'f'(?=.)", r"0", line)
 
