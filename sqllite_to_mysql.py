@@ -35,9 +35,9 @@ for line in fileinput.input():
 		name, sub = m.groups()
 		line = "DROP TABLE IF EXISTS %(name)s;\nCREATE TABLE IF NOT EXISTS %(name)s%(sub)s\n"
 		line = line % dict(name=name, sub=sub)
-	line = line.replace('AUTOINCREMENT','AUTO_INCREMENT')
-	line = line.replace('UNIQUE','')
-	line = line.replace('"','')
+		line = line.replace('AUTOINCREMENT','AUTO_INCREMENT')
+		line = line.replace('UNIQUE','')
+		line = line.replace('"','')
 	else:
 		m = re.search('INSERT INTO "([A-Za-z_]*)"(.*)', line)
 		if m:
